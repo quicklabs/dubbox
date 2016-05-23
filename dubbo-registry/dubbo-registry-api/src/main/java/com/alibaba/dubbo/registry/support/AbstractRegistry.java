@@ -43,6 +43,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.alibaba.dubbo.common.utils.ConfigUtils;
+import com.alibaba.dubbo.common.utils.ExecutorUtil;
 import com.alibaba.dubbo.common.utils.NamedThreadFactory;
 import com.alibaba.dubbo.common.utils.UrlUtils;
 import com.alibaba.dubbo.registry.NotifyListener;
@@ -515,6 +516,9 @@ public abstract class AbstractRegistry implements Registry {
                 }
             }
         }
+        
+        //20160523 Fix: 线程池资源销毁，优雅停机时销毁所有Executor.
+        ExecutorUtil.shutdownNow(registryCacheExecutor, 100);
     }
 
     public String toString() {

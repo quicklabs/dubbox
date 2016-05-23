@@ -60,6 +60,13 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
     
     private static final ScheduledThreadPoolExecutor reconnectExecutorService = new ScheduledThreadPoolExecutor(2, new NamedThreadFactory("DubboClientReconnectTimer", true));
     
+    //20160523 Fix: 线程池资源销毁，优雅停机时销毁所有Executor.
+    static {
+        DataStore dataStore = ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension();
+
+        dataStore.put(Constants.EXECUTOR_SERVICE_COMPONENT_KEY, "DubboClientReconnectTimer", reconnectExecutorService);
+    }
+    
     private volatile  ScheduledFuture<?> reconnectExecutorFuture = null;
     
     protected volatile ExecutorService executor;

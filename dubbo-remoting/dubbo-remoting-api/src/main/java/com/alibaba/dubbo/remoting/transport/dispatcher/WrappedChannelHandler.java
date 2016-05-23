@@ -37,6 +37,13 @@ public class WrappedChannelHandler implements ChannelHandlerDelegate {
 
     protected static final ExecutorService SHARED_EXECUTOR = Executors.newCachedThreadPool(new NamedThreadFactory("DubboSharedHandler", true));
     
+    //20160523 Fix: 线程池资源销毁，优雅停机时销毁所有Executor.
+    static {
+        DataStore dataStore = ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension();
+
+        dataStore.put(Constants.EXECUTOR_SERVICE_COMPONENT_KEY, "DubboSharedHandler", SHARED_EXECUTOR);
+    }
+    
     protected final ExecutorService executor;
     
     protected final ChannelHandler handler;

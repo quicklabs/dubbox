@@ -439,6 +439,13 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         } catch (Throwable t) {
             logger.warn(t.getMessage(), t);
         }
+        
+        //20160523 Fix: 线程池资源销毁，优雅停机时销毁所有Executor.
+        try {
+        	retryExecutor.shutdown();
+        } catch (Throwable t) {
+            logger.warn(t.getMessage(), t);
+        }
     }
 
     // ==== 模板方法 ====

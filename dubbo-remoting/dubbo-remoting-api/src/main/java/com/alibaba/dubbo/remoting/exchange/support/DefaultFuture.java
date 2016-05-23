@@ -278,6 +278,9 @@ public class DefaultFuture implements ResponseFuture {
                     + " -> " + channel.getRemoteAddress();
     }
 
+   	//20160523 Fix: 线程池资源销毁，优雅停机时销毁所有Executor.
+	private static volatile boolean interrupted;
+    
     private static class RemotingInvocationTimeoutScan implements Runnable {
 
         public void run() {
@@ -309,6 +312,10 @@ public class DefaultFuture implements ResponseFuture {
         Thread th = new Thread(new RemotingInvocationTimeoutScan(), "DubboResponseTimeoutScanTimer");
         th.setDaemon(true);
         th.start();
+    }
+    
+    public static void close() {
+        interrupted = true;
     }
 
 }

@@ -17,6 +17,7 @@ package com.alibaba.dubbo.remoting.transport.netty;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.Channel;
@@ -70,6 +71,7 @@ public class NettyClient extends AbstractClient {
         }, "DubboShutdownHook-NettyClient"));
     }
 
+    protected static final AtomicInteger CLIENT_COUNTER = new AtomicInteger();
     private ClientBootstrap bootstrap;
 
     private volatile Channel channel; // volatile, please copy reference to use
@@ -80,6 +82,9 @@ public class NettyClient extends AbstractClient {
     
     @Override
     protected void doOpen() throws Throwable {
+    	//20160523 Fix: 线程池资源销毁，优雅停机时销毁所有Executor.
+    	CLIENT_COUNTER.getAndIncrement();
+    	
         NettyHelper.setNettyLoggerFactory();
         bootstrap = new ClientBootstrap(channelFactory);
         // config
@@ -169,6 +174,14 @@ public class NettyClient extends AbstractClient {
         } catch (Throwable t) {
             logger.warn(t.getMessage());
         }*/
+    	//20160523 Fix: 线程池资源销毁，优雅停机时销毁所有Executor.
+        if (CLIENT_COUNTER.decrementAndGet() <= 0 ) {
+            try {
+                bootstrap.releaseExternalResources();
+            } catch (Throwable t) {
+                logger.warn(t.getMessage());
+            }
+        }
     }
 
     @Override

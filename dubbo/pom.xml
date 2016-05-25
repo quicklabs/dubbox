@@ -19,12 +19,11 @@
     <parent>
         <groupId>com.alibaba</groupId>
         <artifactId>dubbo-parent</artifactId>
-        <version>2.8.4-ENHANCED</version>
+        <version>2.8.4-CIFPAYLC-ENHANCED</version>
     </parent>
     <artifactId>dubbo</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <description>The all in one project of dubbo</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
@@ -542,4 +541,5 @@
             </plugin>
         </plugins>
     </build>
+    <description>基于当当的dubbox2.8.4版本，修复一些比较严重的BUG。</description>
 </project>

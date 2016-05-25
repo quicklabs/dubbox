@@ -284,7 +284,7 @@ public class DefaultFuture implements ResponseFuture {
     private static class RemotingInvocationTimeoutScan implements Runnable {
 
         public void run() {
-            while (true) {
+            while (!interrupted) {
                 try {
                     for (DefaultFuture future : FUTURES.values()) {
                         if (future == null || future.isDone()) {
